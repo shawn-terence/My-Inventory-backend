@@ -75,3 +75,17 @@ class InventoryListView(APIView):
         return Response(serializer.data,status=status.HTTP_200_OK)
 
 #update Inventory
+class UpdateInventoryView(APIView):
+    def put(self, request, pk):
+        try:
+            inventory = Inventory.objects.get(id=pk)
+        except Inventory.DoesNotExist:
+            return Response({"message": "Inventory item not found"}, status=status.HTTP_404_NOT_FOUND)
+
+        added_quantity = request.data.get("quantity")
+        if isinstance(added_quantity, int) and added_quantity > 0:
+            inventory.quantity += added_quantity
+            inventory.save()
+            return Response({"message": "Inventory updated successfully"}, status=status.HTTP_200_OK)
+
+        return Response({"message": "Invalid quantity"}, status=status.HTTP_400_BAD_REQUEST)
