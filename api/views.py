@@ -57,6 +57,7 @@ class UserLoginView(ObtainAuthToken):
 
  
 """                                                     INVENTORY VIEWS                                                                             """
+#Add inventory
 class AddInventoryView(APIView):
     def post(self,request):
         serializer=InventorySerializer(data=request.data)
@@ -65,3 +66,12 @@ class AddInventoryView(APIView):
             serializer.save()
             return Response(serializer.data , status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+
+#Get inventory list
+class InventoryListView(APIView):
+    def get(self,request):
+        inventory=Inventory.objects.all()
+        serializer=InventorySerializer(inventory,many=True)
+        return Response(serializer.data,status=status.HTTP_200_OK)
+
+#update Inventory
