@@ -26,3 +26,21 @@ class TransactionSerializer(serializers.ModelSerializer):
     def create(self,validated_data):
         transaction=Transaction.objects.create(**validated_data)
         return transaction
+#Purchase serializer
+class PurchaseItemSerializer(serializers.Serializer):
+    id = serializers.IntegerField()
+    quantity = serializers.IntegerField(min_value=1)
+
+class PurchaseSerializer(serializers.Serializer):
+    items=PurchaseItemSerializer(many=True)
+
+    def validate(self, data):
+        items = data['items']
+        for item in items:
+            try:
+                inventory_item = Inventory.objects.get(id=item['id'])
+                if inventory_item.quantity < item['quantity']:
+                    raise serializers.ValidationError(f"Not enough {inventory_item.name} in stock, only {inventory_item.quantity} left")
+            except Inventory.DoesNotExist:
+                raise serializers.ValidationError(f"Item with id {item['id']} does not exist")
+        return data
