@@ -95,3 +95,12 @@ class DeleteInventoryView(APIView):
         inventory=Inventory.objects.get(id=pk)
         inventory.delete()
         return Response({"message":"Inventory deleted successfully"},status=status.HTTP_204_NO_CONTENT)
+
+
+"""                                                 Transaction Views                                                                   """
+#Get transactions
+class TransactionsView(APIView):
+    def get(self, request, *args, **kwargs):
+        transactions = Transaction.objects.all()
+        serializer = TransactionSerializer(transactions, many=True)
+        return Response(serializer.data, status=status.HTTP_200_OK)
