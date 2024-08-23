@@ -89,3 +89,9 @@ class UpdateInventoryView(APIView):
             return Response({"message": "Inventory updated successfully"}, status=status.HTTP_200_OK)
 
         return Response({"message": "Invalid quantity"}, status=status.HTTP_400_BAD_REQUEST)
+#Delete Item
+class DeleteInventoryView(APIView):
+    def delete(self,request,pk):
+        inventory=Inventory.objects.get(id=pk)
+        inventory.delete()
+        return Response({"message":"Inventory deleted successfully"},status=status.HTTP_204_NO_CONTENT)
