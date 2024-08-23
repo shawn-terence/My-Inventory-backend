@@ -66,7 +66,35 @@ class AddInventoryView(APIView):
             serializer.save()
             return Response(serializer.data , status=status.HTTP_201_CREATED)
         return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
+#Upload inventory using spreadsheet
+@api_view(['POST'])
+@parser_classes([MultiPartParser, FormParser])
+def upload_file_view(request):
+    if 'file' not in request.FILES:
+        return JsonResponse({'error': 'No file uploaded'}, status=status.HTTP_400_BAD_REQUEST)
 
+    file = request.FILES['file']
+    try:
+        df = pd.read_excel(file)  # Read the spreadsheet into a DataFrame
+    except Exception as e:
+        return JsonResponse({'error': f'Invalid file format: {str(e)}'}, status=status.HTTP_400_BAD_REQUEST)
+
+    # Rename the columns
+    expected_columns = ['name', 'description', 'price', 'quantity']
+    if not all(column in df.columns for column in expected_columns):
+        return JsonResponse({'error': f'File must contain the following columns: {expected_columns}'}, status=status.HTTP_400_BAD_REQUEST)
+
+    df = df[expected_columns]  # Ensure the DataFrame only contains the expected columns
+
+    for index, row in df.iterrows():
+        Inventory.objects.create(
+            name=row['name'],
+            description=row['description'],
+            price=row['price'],
+            quantity=row['quantity']
+        )
+
+    return JsonResponse({'message': 'File uploaded successfully'}, status=status.HTTP_201_CREATED)
 #Get inventory list
 class InventoryListView(APIView):
     def get(self,request):
