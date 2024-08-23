@@ -10,3 +10,11 @@ class UserSerializer(serializers.ModelSerializer):
     def create(self,validated_data):
         user=User.objects.create_user(**validated_data)
         return user
+#Inventory serializer
+class InventorySerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Inventory
+        fields = ('id', 'name', 'description', 'quantity', 'price')
+    def create(self,validated_data):
+        inventory = Inventory.objects.create(**validated_data)
+        return inventory
