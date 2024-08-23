@@ -42,7 +42,7 @@ class Inventory(models.Model):
     quantity = models.IntegerField()
 
 class Transaction(models.Model):
-    inventory=models.FroreignKey(Inventory,on_delete=models.CASCADE)
+    inventory=models.ForeignKey(Inventory,on_delete=models.CASCADE)
     product_name=models.CharField(max_length=255)
     date=models.DateField(default=date.today)
-    time=models.TimeField(Auto_now_add=True)
+    time=models.TimeField(auto_now_add=True)
