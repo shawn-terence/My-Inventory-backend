@@ -61,7 +61,6 @@ class UserLoginView(ObtainAuthToken):
 class AddInventoryView(APIView):
     def post(self,request):
         serializer=InventorySerializer(data=request.data)
-        print(serializer)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data , status=status.HTTP_201_CREATED)
@@ -132,3 +131,36 @@ class TransactionsView(APIView):
         transactions = Transaction.objects.all()
         serializer = TransactionSerializer(transactions, many=True)
         return Response(serializer.data, status=status.HTTP_200_OK)
+#Purchase View
+class PurchaseView(APIView):
+    def post(self, request, *args, **kwargs):
+        serializer = PurchaseSerializer(data=request.data)
+        if serializer.is_valid():
+            with db_transaction.atomic():
+                for item in serializer.validated_data['items']:
+                    try:
+                        inventory_item = Inventory.objects.select_for_update().get(id=item['id'])
+                        inventory_item.quantity -= item['quantity']
+                        inventory_item.save()
+
+                        # Create a transaction record
+                        transaction_data = {
+                            'inventory': inventory_item.id,
+                            'product_name': inventory_item.name,
+                            'date': date.today(),
+                            'time': datetime.now(),
+                        }
+                        transaction_serializer = TransactionSerializer(data=transaction_data)
+                        if transaction_serializer.is_valid():
+                            transaction_serializer.save()
+                        else:
+                            return Response(transaction_serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+                    except Inventory.DoesNotExist:
+                        return Response(
+                            {"error": f"Item with id {item['id']} does not exist"},
+                            status=status.HTTP_400_BAD_REQUEST
+                        )
+
+            return Response({"message": "Purchase successful"}, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
