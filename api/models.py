@@ -40,3 +40,9 @@ class Inventory(models.model):
     description = models.TextField()
     price = models.DecimalField(max_digits=10, decimal_places=2)
     quantity = models.IntegerField()
+
+class Transaction(models.model):
+    inventory=models.FroreignKey(Inventory,on_delete=models.CASCADE)
+    product_name=models.CharField(max_length=255)
+    date=models.DateField(default=date.today)
+    time=models.TimeField(Auto_now_add=True)
