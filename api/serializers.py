@@ -18,3 +18,11 @@ class InventorySerializer(serializers.ModelSerializer):
     def create(self,validated_data):
         inventory = Inventory.objects.create(**validated_data)
         return inventory
+#Transaction serializer
+class TransactionSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Transaction
+        fields=('id','inventory','product_name','date','time')
+    def create(self,validated_data):
+        transaction=Transaction.objects.create(**validated_data)
+        return transaction
