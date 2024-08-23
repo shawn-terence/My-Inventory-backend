@@ -55,3 +55,13 @@ class UserLoginView(ObtainAuthToken):
                 status=status.HTTP_401_UNAUTHORIZED
             )
 
+ 
+"""                                                     INVENTORY VIEWS                                                                             """
+class AddInventoryView(APIView):
+    def post(self,request):
+        serializer=InventorySerializer(data=request.data)
+        print(serializer)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data , status=status.HTTP_201_CREATED)
+        return Response(serializer.errors,status=status.HTTP_400_BAD_REQUEST)
