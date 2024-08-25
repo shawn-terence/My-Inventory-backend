@@ -126,4 +126,4 @@ Each transaction is associated with one inventory item.
 - **PurchaseView**: Allows an item to be purchased which also logs the purchase in the transaction table
 ## Testing
 To run tests, execute:
-```python manage.py test inventory.tests```
+```python manage.py test api.tests.test_views```
