@@ -110,21 +110,20 @@ Each transaction is associated with one inventory item.
 
 ### Views
 #### User Views
-- **UserRegistrationView**: Handles user registration by validating and saving user data. No authentication required.
-- **UserLoginView**: Authenticates users and returns a token. No authentication required for login.
-- **UserDetailView**: Returns details of the currently authenticated user. Requires the user to be authenticated.
-- **ChangePasswordView**: Allows authenticated users to update their password. Requires the user to be authenticated.
+- **UserRegistrationView**: Handles user registration by validating and saving user data.
+- **UserLoginView**: Authenticates users and returns a token.
+
 
 #### Inventory Views
-- **InventoryAddView**: Allows authenticated users to add new inventory items. Requires the user to be authenticated.
-- **InventoryListView**: Retrieves a list of all inventory items. No authentication required.
-- **InventoryUpdateView**: Allows authenticated users to update an inventory item by its ID. Requires the user to be authenticated.
-- **InventoryDeleteView**: Allows authenticated users to delete an inventory item by its ID. Requires the user to be authenticated.
+- **AddInventoryView**: Allows   users to add new inventory items.
+- **InventoryListView**: Retrieves a list of all inventory items.
+- **UpdateInventoryView**: Allows   users to update an inventory item by its ID.
+- **DeleteInventoryView**: Allows   users to delete an inventory item by its ID.
 
 #### Transaction Views
-- **TransactionListView**: Retrieves a list of all transactions. No authentication required.
-
+- **TransactionListView**: Retrieves a list of all transactions.
+#### Purchase View
+- **PurchaseView**: Allows an item to be purchased which also logs the purchase in the transaction table
 ## Testing
 To run tests, execute:
-```bash
-python manage.py test inventory.tests
+```python manage.py test inventory.tests```
