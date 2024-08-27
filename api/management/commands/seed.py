@@ -1,9 +1,7 @@
-# api/management/commands/seed.py
-
 from django.core.management.base import BaseCommand
 from api.models import Inventory, Transaction
 from django.contrib.auth import get_user_model
-from datetime import datetime
+from datetime import datetime, timedelta
 import random
 
 class Command(BaseCommand):
@@ -74,15 +72,34 @@ class Command(BaseCommand):
             inventory_items.append(item)
         self.stdout.write(self.style.SUCCESS(f"{len(inventory_items)} inventory items created."))
 
-        # Create transactions
-        for i in range(100):  # Create 100 transactions
+        # Calculate last month
+        current_date = datetime.now()
+        last_month = current_date.replace(day=1) - timedelta(days=1)
+        last_month_start = last_month.replace(day=1)
+        last_month_end = last_month
+
+        # Create transactions for last month
+        for _ in range(50):  # Create 50 transactions for last month
+            item = random.choice(inventory_items)
+            random_date = last_month_start + timedelta(days=random.randint(0, (last_month_end - last_month_start).days))
+            Transaction.objects.create(
+                inventory=item,
+                name=item.name,
+                quantity=random.randint(1, 10),  # Random quantity for each transaction
+                date=random_date.date(),
+                time=random_date.time()
+            )
+        self.stdout.write(self.style.SUCCESS("Transactions for last month created."))
+
+        for _ in range(50):  # Create 50 transactions for the current month
             item = random.choice(inventory_items)
             Transaction.objects.create(
                 inventory=item,
-                product_name=item.name,
+                name=item.name,
+                quantity=random.randint(1, 10),  # Random quantity for each transaction
                 date=datetime.now().date(),
                 time=datetime.now().time()
             )
-        self.stdout.write(self.style.SUCCESS("Transactions created."))
+        self.stdout.write(self.style.SUCCESS("Transactions for the current month created."))
 
-        self.stdout.write(self.style.SUCCESS("Successfully seeded the database"))
+        self.stdout.write(self.style.SUCCESS("Successfully seeded the database."))

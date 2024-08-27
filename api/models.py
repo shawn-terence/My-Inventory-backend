@@ -38,11 +38,12 @@ class User(AbstractUser):
 class Inventory(models.Model):
     name = models.CharField(max_length=100)
     description = models.TextField()
-    price = models.IntegerField(max_length=10,)
+    price = models.IntegerField()
     quantity = models.IntegerField()
 
 class Transaction(models.Model):
     inventory=models.ForeignKey(Inventory,on_delete=models.CASCADE)
-    product_name=models.CharField(max_length=255)
+    name=models.CharField(max_length=255)
     date=models.DateField(default=date.today)
     time=models.TimeField(auto_now_add=True)
+    quantity=models.IntegerField()

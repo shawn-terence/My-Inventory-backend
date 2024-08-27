@@ -18,6 +18,7 @@ from .forms import UploadFileForm
 from django.db import transaction as db_transaction
 from datetime import datetime
 import pandas as pd
+from django.utils.timezone import now
 
 # Create your views here.
 User=get_user_model()
@@ -162,16 +163,25 @@ class PurchaseView(APIView):
             with db_transaction.atomic():
                 for item in serializer.validated_data['items']:
                     try:
+                        # Retrieve and update inventory
                         inventory_item = Inventory.objects.select_for_update().get(id=item['id'])
+                        if inventory_item.quantity < item['quantity']:
+                            return Response(
+                                {"error": f"Not enough stock for item '{inventory_item.name}'."},
+                                status=status.HTTP_400_BAD_REQUEST
+                            )
+                        
+                        # Deduct the quantity purchased from the inventory
                         inventory_item.quantity -= item['quantity']
                         inventory_item.save()
 
                         # Create a transaction record
                         transaction_data = {
                             'inventory': inventory_item.id,
-                            'product_name': inventory_item.name,
+                            'name': inventory_item.name,
                             'date': date.today(),
-                            'time': datetime.now(),
+                            'time': now(),  # Use Django's timezone-aware now()
+                            'quantity': item['quantity']
                         }
                         transaction_serializer = TransactionSerializer(data=transaction_data)
                         if transaction_serializer.is_valid():

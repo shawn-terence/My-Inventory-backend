@@ -127,3 +127,6 @@ Each transaction is associated with one inventory item.
 ## Testing
 To run tests, execute:
 ```python manage.py test api.tests.test_views```
+## Seeding
+To seed the data run:```python manage.py seed```
+ **Note**:When the seed command is run, it first deletes all the data in the database

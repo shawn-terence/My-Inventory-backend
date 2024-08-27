@@ -22,7 +22,7 @@ class InventorySerializer(serializers.ModelSerializer):
 class TransactionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Transaction
-        fields=('id','inventory','product_name','date','time')
+        fields=('id','inventory','name','date','time','quantity')
     def create(self,validated_data):
         transaction=Transaction.objects.create(**validated_data)
         return transaction
