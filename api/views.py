@@ -124,7 +124,7 @@ class UpdateInventoryView(APIView):
             inventory.description = description
         if price is not None:
             try:
-                inventory.price = int(price)  # Ensure price is an integer
+                inventory.price = float(price)  # Ensure price is a float
             except ValueError:
                 return Response({"message": "Invalid price format"}, status=status.HTTP_400_BAD_REQUEST)
         if quantity is not None:
@@ -139,7 +139,15 @@ class UpdateInventoryView(APIView):
 
         # Save the updated inventory item
         inventory.save()
-        return Response({"message": "Inventory updated successfully"}, status=status.HTTP_200_OK)
+
+        # Return the updated inventory item data
+        return Response({
+            "id": inventory.id,
+            "name": inventory.name,
+            "description": inventory.description,
+            "price": inventory.price,
+            "quantity": inventory.quantity
+        }, status=status.HTTP_200_OK)
 #Delete Item
 class DeleteInventoryView(APIView):
     def delete(self,request,pk):
