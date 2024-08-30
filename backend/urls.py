@@ -11,7 +11,7 @@ urlpatterns = [
     path("buy/",PurchaseView.as_view(),name="buy"),
     path("inventory/<int:pk>/",UpdateInventoryView.as_view(),name="add_stock"),
     path('upload/', upload_file_view, name='upload_file'),
-    path("inventory/<int:pk>/delete",DeleteInventoryView.as_view(),name="delete_item"),
+    path("inventory/<int:pk>/delete/",DeleteInventoryView.as_view(),name="delete_item"),
     path("purchase/",PurchaseView.as_view(),name="purchase"),
     path("transactions/",TransactionsView.as_view(),name="transactions")
 ]
