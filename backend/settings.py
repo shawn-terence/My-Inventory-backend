@@ -25,7 +25,7 @@ SECRET_KEY = "django-insecure-1#l0koi3*0zi10x=pyf=0yvme5xz2!wny1w((rs*jb!xo4_@%%
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ["my-inventory-backend.onrender.com"]
+ALLOWED_HOSTS = ["*"]
 
 
 # Application definition
@@ -131,3 +131,4 @@ STATIC_URL = "static/"
 
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 CORS_ALLOW_ALL_ORIGINS=True
+django_heroku.serrings(locals())
